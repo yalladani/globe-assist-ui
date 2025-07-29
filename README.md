@@ -1,73 +1,74 @@
-# Welcome to your Lovable project
+# Globe – CSM Assistant
 
-## Project info
+Welcome to **Globe**, an internal support platform built to serve Customer Success Managers (CSMs) at Global-e.
 
-**URL**: https://lovable.dev/projects/7174b48b-7bef-4890-a0c1-e60d5a0d0c54
+This tool provides CSMs with fast, clear access to key product information in response to merchant questions across three main areas:
+- Shipments  
+- Payments  
+- Configuration
 
-## How can I edit this code?
+The user interface integrates seamlessly with our internal AI agent built using **Cursor** and **Atlassian MCP**.
 
-There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/7174b48b-7bef-4890-a0c1-e60d5a0d0c54) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🚀 Quick Start
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Step 1: Clone the repository
+git clone https://github.com/YOUR_USERNAME/globe-assist-ui.git
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd globe-assist-ui
 
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Local Development
+```sh
+npm run dev
+```
 
-**Use GitHub Codespaces**
+### Build for Production
+```sh
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Preview Production Build
+```sh
+npm run preview
+```
 
-## What technologies are used for this project?
+## 📁 Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── ui/            # shadcn/ui components
+│   └── ...            # Custom components
+├── pages/             # Page components
+├── types/             # TypeScript types
+├── data/              # Mock data
+└── lib/               # Utilities
+```
+
+## 🛠️ Technologies
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Fast build tool
+- **TypeScript** - Type safety
+- **React 18** - UI framework
+- **shadcn/ui** - Component library
+- **Tailwind CSS** - Styling
+- **React Router** - Navigation
+- **TanStack Query** - Data fetching
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/7174b48b-7bef-4890-a0c1-e60d5a0d0c54) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
