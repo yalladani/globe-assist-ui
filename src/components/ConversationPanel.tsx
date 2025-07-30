@@ -1,17 +1,25 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Message } from '@/types/globe';
+import { Message, MessageFeedback } from '@/types/globe';
 import { PromptInput } from './PromptInput';
 import { Category } from '@/types/globe';
 import { Bot, User } from 'lucide-react';
+import MessageFeedbackComponent from './MessageFeedback';
 
 interface ConversationPanelProps {
   messages: Message[];
   onSendMessage: (prompt: string, category: Category) => void;
+  onFeedback: (messageId: string, feedback: MessageFeedback) => void;
   isLoading: boolean;
   lockedCategory?: Category;
 }
 
-export const ConversationPanel = ({ messages, onSendMessage, isLoading, lockedCategory }: ConversationPanelProps) => {
+export const ConversationPanel = ({ 
+  messages, 
+  onSendMessage, 
+  onFeedback,
+  isLoading, 
+  lockedCategory 
+}: ConversationPanelProps) => {
   return (
     <div className="h-full flex flex-col bg-globe-surface">
       <div className="p-4 border-b border-globe-border-subtle">
@@ -44,6 +52,16 @@ export const ConversationPanel = ({ messages, onSendMessage, isLoading, lockedCa
                 </p>
                 {message.category && (
                   <p className="text-xs opacity-70">#{message.category}</p>
+                )}
+                
+                {/* Feedback buttons for AI messages */}
+                {!message.isUser && (
+                  <MessageFeedbackComponent
+                    messageId={message.id}
+                    currentFeedback={message.feedback}
+                    onFeedback={onFeedback}
+                    showExtended={true}
+                  />
                 )}
               </div>
               
