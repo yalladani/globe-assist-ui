@@ -1,6 +1,8 @@
 // Atlassian MCP Service
 // This service handles communication with Atlassian products via MCP
 
+import { mcpProxyService } from './mcpProxy';
+
 export interface AtlassianConfig {
   cloudId: string;
   accessToken: string;
@@ -68,24 +70,43 @@ class AtlassianService {
     }
 
     try {
-      // This would be replaced with actual MCP calls
-      // For now, we'll simulate the structure
       const jql = projectKey 
         ? `project = ${projectKey} AND text ~ "${query}"`
         : `text ~ "${query}"`;
 
-      // Simulate MCP call to search Jira issues
       console.log('Searching Jira issues with JQL:', jql);
       
-      // This would be the actual MCP call:
-      // return await mcpAtlassianSearchJiraIssuesUsingJql({
-      //   cloudId: this.config.cloudId,
-      //   jql: jql,
-      //   maxResults: 10
-      // });
+      // Use the MCP proxy service to search Jira issues
+      const searchResult = await mcpProxyService.callMCPFunction('searchJiraIssuesUsingJql', {
+        cloudId: this.config.cloudId,
+        jql: jql,
+        maxResults: 10
+      });
 
-      // For now, return mock data
-      return this.getMockJiraIssues(query);
+      if (searchResult && searchResult.issues) {
+        return searchResult.issues.map((issue: any) => ({
+          id: issue.id,
+          key: issue.key,
+          summary: issue.fields.summary || '',
+          description: issue.fields.description || '',
+          status: issue.fields.status?.name || 'Unknown',
+          priority: issue.fields.priority?.name || 'Medium',
+          assignee: issue.fields.assignee?.displayName,
+          reporter: issue.fields.reporter?.displayName || '',
+          created: issue.fields.created,
+          updated: issue.fields.updated,
+          project: {
+            key: issue.fields.project.key,
+            name: issue.fields.project.name
+          },
+          issueType: {
+            name: issue.fields.issuetype.name,
+            iconUrl: issue.fields.issuetype.iconUrl
+          }
+        }));
+      }
+
+      return [];
     } catch (error) {
       console.error('Error searching Jira issues:', error);
       return this.getMockJiraIssues(query);
@@ -99,17 +120,40 @@ class AtlassianService {
     }
 
     try {
-      // This would be replaced with actual MCP calls
       console.log('Searching Confluence pages with query:', query);
       
-      // This would be the actual MCP call:
-      // return await mcpAtlassianSearchConfluenceUsingCql({
-      //   cloudId: this.config.cloudId,
-      //   cql: `text ~ "${query}"${spaceKey ? ` AND space = "${spaceKey}"` : ''}`
-      // });
+      // Use the MCP proxy service to search Confluence pages
+      const cql = `text ~ "${query}"${spaceKey ? ` AND space = "${spaceKey}"` : ''}`;
+      const searchResult = await mcpProxyService.callMCPFunction('searchConfluenceUsingCql', {
+        cloudId: this.config.cloudId,
+        cql: cql,
+        limit: 10
+      });
 
-      // For now, return mock data
-      return this.getMockConfluencePages(query);
+      if (searchResult && searchResult.results) {
+        return searchResult.results.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          space: {
+            key: page.space?.key || '',
+            name: page.space?.name || ''
+          },
+          status: page.status || 'current',
+          version: {
+            number: page.version?.number || 1
+          },
+          body: {
+            storage: {
+              value: page.body?.storage?.value || ''
+            }
+          },
+          _links: {
+            webui: page._links?.webui || ''
+          }
+        }));
+      }
+
+      return [];
     } catch (error) {
       console.error('Error searching Confluence pages:', error);
       return this.getMockConfluencePages(query);
@@ -123,14 +167,40 @@ class AtlassianService {
 
     console.log('Getting Jira issue:', issueKey);
     
-    // This would be the actual MCP call:
-    // return await mcpAtlassianGetJiraIssue({
-    //   cloudId: this.config.cloudId,
-    //   issueIdOrKey: issueKey
-    // });
+    try {
+      const issue = await mcpProxyService.callMCPFunction('getJiraIssue', {
+        cloudId: this.config.cloudId,
+        issueIdOrKey: issueKey
+      });
 
-    // For now, return mock data
-    return this.getMockJiraIssue(issueKey);
+      if (issue) {
+        return {
+          id: issue.id,
+          key: issue.key,
+          summary: issue.fields.summary || '',
+          description: issue.fields.description || '',
+          status: issue.fields.status?.name || 'Unknown',
+          priority: issue.fields.priority?.name || 'Medium',
+          assignee: issue.fields.assignee?.displayName,
+          reporter: issue.fields.reporter?.displayName || '',
+          created: issue.fields.created,
+          updated: issue.fields.updated,
+          project: {
+            key: issue.fields.project.key,
+            name: issue.fields.project.name
+          },
+          issueType: {
+            name: issue.fields.issuetype.name,
+            iconUrl: issue.fields.issuetype.iconUrl
+          }
+        };
+      }
+
+      throw new Error('Issue not found');
+    } catch (error) {
+      console.error('Error getting Jira issue:', error);
+      return this.getMockJiraIssue(issueKey);
+    }
   }
 
   async getConfluencePage(pageId: string): Promise<ConfluencePage> {
@@ -140,14 +210,40 @@ class AtlassianService {
 
     console.log('Getting Confluence page:', pageId);
     
-    // This would be the actual MCP call:
-    // return await mcpAtlassianGetConfluencePage({
-    //   cloudId: this.config.cloudId,
-    //   pageId: pageId
-    // });
+    try {
+      const page = await mcpProxyService.callMCPFunction('getConfluencePage', {
+        cloudId: this.config.cloudId,
+        pageId: pageId
+      });
 
-    // For now, return mock data
-    return this.getMockConfluencePage(pageId);
+      if (page) {
+        return {
+          id: page.id,
+          title: page.title,
+          space: {
+            key: page.space?.key || '',
+            name: page.space?.name || ''
+          },
+          status: page.status || 'current',
+          version: {
+            number: page.version?.number || 1
+          },
+          body: {
+            storage: {
+              value: page.body?.storage?.value || ''
+            }
+          },
+          _links: {
+            webui: page._links?.webui || ''
+          }
+        };
+      }
+
+      throw new Error('Page not found');
+    } catch (error) {
+      console.error('Error getting Confluence page:', error);
+      return this.getMockConfluencePage(pageId);
+    }
   }
 
   async searchAll(query: string): Promise<AtlassianSearchResult> {
@@ -164,7 +260,6 @@ class AtlassianService {
       };
     } catch (error) {
       console.error('Error in searchAll:', error);
-      // Return empty results instead of throwing
       return {
         jiraIssues: [],
         confluencePages: [],
@@ -173,7 +268,7 @@ class AtlassianService {
     }
   }
 
-  // Mock data methods (to be replaced with actual MCP calls)
+  // Mock data methods (fallback)
   private getMockJiraIssues(query: string): JiraIssue[] {
     return [
       {

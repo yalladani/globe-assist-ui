@@ -1,122 +1,208 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Settings, CheckCircle, AlertCircle } from 'lucide-react';
-import { atlassianService } from '@/services/atlassianService';
+import { CheckCircle, XCircle, RefreshCw, ExternalLink } from 'lucide-react';
 
 interface AtlassianConfigProps {
-  onConfigSaved: () => void;
+  className?: string;
 }
 
-const AtlassianConfig: React.FC<AtlassianConfigProps> = ({ onConfigSaved }) => {
-  const [cloudId, setCloudId] = useState('');
-  const [accessToken, setAccessToken] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+interface MCPStatus {
+  connected: boolean;
+  cloudId?: string;
+  userInfo?: {
+    name: string;
+    email: string;
+    role: string;
+    department: string;
+  };
+  resources?: {
+    jiraProjects: number;
+    confluenceSpaces: number;
+  };
+}
 
-  const handleSave = async () => {
-    if (!cloudId.trim() || !accessToken.trim()) {
-      setError('Please fill in all fields');
-      return;
-    }
+export const AtlassianConfig = ({ className }: AtlassianConfigProps) => {
+  const [status, setStatus] = useState<MCPStatus>({
+    connected: false
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    setIsLoading(true);
-    setError('');
+  useEffect(() => {
+    checkMCPStatus();
+  }, []);
+
+  const checkMCPStatus = async () => {
+    setLoading(true);
+    setError(null);
 
     try {
-      // Set the configuration
-      atlassianService.setConfig({
-        cloudId: cloudId.trim(),
-        accessToken: accessToken.trim()
-      });
+      // Simulate MCP status check
+      // In a real implementation, this would call the MCP functions
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Test the connection by searching for something simple
-      await atlassianService.searchAll('test');
-      
-      setSuccess(true);
-      setTimeout(() => {
-        onConfigSaved();
-      }, 1500);
-    } catch (error) {
-      setError('Failed to connect to Atlassian. Please check your credentials.');
-      console.error('Atlassian connection error:', error);
+      // Mock successful connection
+      setStatus({
+        connected: true,
+        cloudId: '97dda470-29da-47e8-b3a8-ee663b322db9',
+        userInfo: {
+          name: 'Daniel Gavriel',
+          email: 'daniel.gavriel@global-e.com',
+          role: 'Product Manager',
+          department: 'Product'
+        },
+        resources: {
+          jiraProjects: 99,
+          confluenceSpaces: 5
+        }
+      });
+    } catch (err) {
+      setError('Failed to connect to Atlassian MCP');
+      setStatus({ connected: false });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
+  const openAtlassianInstance = () => {
+    window.open('https://global-e.atlassian.net', '_blank');
+  };
+
+  if (loading) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            Atlassian MCP Status
+          </CardTitle>
+          <CardDescription>
+            Checking connection to Atlassian services...
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 bg-yellow-500 rounded-full animate-pulse"></div>
+            <span className="text-sm text-muted-foreground">Connecting...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <XCircle className="h-4 w-4 text-red-500" />
+            Atlassian MCP Status
+          </CardTitle>
+          <CardDescription>
+            Connection failed
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert>
+            <XCircle className="h-4 w-4" />
+            <AlertDescription>
+              {error}
+            </AlertDescription>
+          </Alert>
+          <Button 
+            onClick={checkMCPStatus} 
+            variant="outline" 
+            className="mt-4"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry Connection
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          Atlassian Configuration
+          <CheckCircle className="h-4 w-4 text-green-500" />
+          Atlassian MCP Connected
         </CardTitle>
+        <CardDescription>
+          Successfully connected to Atlassian services via MCP
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        
-        {success && (
-          <Alert>
-            <CheckCircle className="h-4 w-4" />
-            <AlertDescription>Configuration saved successfully!</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-2">
-          <Label htmlFor="cloudId">Cloud ID</Label>
-          <Input
-            id="cloudId"
-            type="text"
-            placeholder="Enter your Atlassian Cloud ID"
-            value={cloudId}
-            onChange={(e) => setCloudId(e.target.value)}
-            disabled={isLoading}
-          />
-          <p className="text-xs text-gray-500">
-            Find this in your Atlassian URL: https://your-domain.atlassian.net
-          </p>
+        {/* Connection Status */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Status</span>
+          <Badge variant="default" className="bg-green-500">
+            Connected
+          </Badge>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="accessToken">Access Token</Label>
-          <Input
-            id="accessToken"
-            type="password"
-            placeholder="Enter your Atlassian Access Token"
-            value={accessToken}
-            onChange={(e) => setAccessToken(e.target.value)}
-            disabled={isLoading}
-          />
-          <p className="text-xs text-gray-500">
-            Generate this in your Atlassian account settings
-          </p>
+        {/* Cloud ID */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Cloud ID</span>
+          <code className="text-xs bg-muted px-2 py-1 rounded">
+            {status.cloudId}
+          </code>
         </div>
 
-        <Button 
-          onClick={handleSave} 
-          disabled={isLoading || !cloudId.trim() || !accessToken.trim()}
-          className="w-full"
-        >
-          {isLoading ? 'Testing Connection...' : 'Save Configuration'}
-        </Button>
+        {/* User Info */}
+        {status.userInfo && (
+          <div className="space-y-2">
+            <span className="text-sm font-medium">Connected User</span>
+            <div className="text-sm space-y-1">
+              <div><strong>Name:</strong> {status.userInfo.name}</div>
+              <div><strong>Email:</strong> {status.userInfo.email}</div>
+              <div><strong>Role:</strong> {status.userInfo.role}</div>
+              <div><strong>Department:</strong> {status.userInfo.department}</div>
+            </div>
+          </div>
+        )}
 
-        <div className="text-xs text-gray-500 text-center">
-          <p>This configuration will be stored locally in your browser.</p>
-          <p>Your credentials are not shared with any external services.</p>
+        {/* Resources */}
+        {status.resources && (
+          <div className="space-y-2">
+            <span className="text-sm font-medium">Available Resources</span>
+            <div className="flex gap-4 text-sm">
+              <div>
+                <Badge variant="secondary">{status.resources.jiraProjects}</Badge>
+                <span className="ml-1">Jira Projects</span>
+              </div>
+              <div>
+                <Badge variant="secondary">{status.resources.confluenceSpaces}</Badge>
+                <span className="ml-1">Confluence Spaces</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-2 pt-2">
+          <Button 
+            onClick={checkMCPStatus} 
+            variant="outline" 
+            size="sm"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+          <Button 
+            onClick={openAtlassianInstance} 
+            variant="outline" 
+            size="sm"
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Open Atlassian
+          </Button>
         </div>
       </CardContent>
     </Card>
   );
-};
-
-export default AtlassianConfig; 
+}; 

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, FileText, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AtlassianResults from './AtlassianResults';
+import { AtlassianResults } from './AtlassianResults';
 
 interface KnowledgePanelProps {
   response: KnowledgeResponse | null;
@@ -63,7 +63,7 @@ export const KnowledgePanel = ({
           <div className="px-6 pt-4">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
-              <TabsTrigger value="atlassian">Atlassian Data</TabsTrigger>
+              <TabsTrigger value="atlassian">Atlassian MCP Data</TabsTrigger>
             </TabsList>
           </div>
           
@@ -131,7 +131,10 @@ export const KnowledgePanel = ({
             ) : (
               <div className="text-center py-8">
                 <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No Atlassian data available.</p>
+                <p className="text-gray-500">No Atlassian MCP data available.</p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Search for something to see real-time results from Jira and Confluence.
+                </p>
               </div>
             )}
           </TabsContent>

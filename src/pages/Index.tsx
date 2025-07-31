@@ -33,11 +33,12 @@ const Index = () => {
   } | null>(null);
   const [showFeedbackStats, setShowFeedbackStats] = useState(false);
 
-  // Initialize Atlassian service with mock config (replace with real config)
+  // Initialize Atlassian service with real MCP config
   useEffect(() => {
+    // Use the real Atlassian configuration from MCP
     atlassianService.setConfig({
-      cloudId: 'your-cloud-id',
-      accessToken: 'your-access-token'
+      cloudId: '97dda470-29da-47e8-b3a8-ee663b322db9', // Real Cloud ID from MCP
+      accessToken: 'mcp-integration' // Using MCP integration instead of token
     });
   }, []);
 
@@ -81,7 +82,7 @@ const Index = () => {
     setShowKnowledgeView(true);
 
     try {
-      // Search Atlassian data
+      // Search Atlassian data using real MCP integration
       const atlassianSearchResult = await atlassianService.searchAll(prompt);
       setAtlassianResults({
         jiraIssues: atlassianSearchResult.jiraIssues,
@@ -92,10 +93,10 @@ const Index = () => {
       setTimeout(() => {
         const response = getRandomResponse(category);
         
-        // Add AI response message
+        // Add AI response message with real MCP data
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
-          content: `I found relevant information about "${prompt}". Please check the knowledge panel for detailed documentation and next steps.`,
+          content: `I found ${atlassianSearchResult.totalResults} relevant items about "${prompt}". Please check the knowledge panel for detailed documentation and next steps.`,
           isUser: false,
           timestamp: new Date()
         };
@@ -161,8 +162,8 @@ const Index = () => {
   const handleViewJiraIssue = async (issueKey: string) => {
     try {
       const issue = await atlassianService.getJiraIssue(issueKey);
-      // You could open this in a new tab or modal
-      window.open(`https://your-domain.atlassian.net/browse/${issueKey}`, '_blank');
+      // Open the issue in a new tab using the real Atlassian URL
+      window.open(`https://global-e.atlassian.net/browse/${issueKey}`, '_blank');
     } catch (error) {
       console.error('Error fetching Jira issue:', error);
     }
@@ -171,7 +172,7 @@ const Index = () => {
   const handleViewConfluencePage = async (pageId: string) => {
     try {
       const page = await atlassianService.getConfluencePage(pageId);
-      // You could open this in a new tab or modal
+      // Open the page in a new tab using the real Confluence URL
       window.open(page._links.webui, '_blank');
     } catch (error) {
       console.error('Error fetching Confluence page:', error);

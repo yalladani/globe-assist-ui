@@ -1,12 +1,8 @@
 {
   "mcpServers": {
     "atlassian": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-atlassian"],
-      "env": {
-        "ATLASSIAN_CLOUD_ID": "your-cloud-id-here",
-        "ATLASSIAN_ACCESS_TOKEN": "your-access-token-here"
-      }
+        "command": "npx",
+        "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
     }
   },
   "agents": {

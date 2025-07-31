@@ -1,9 +1,9 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, FileText, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { JiraIssue, ConfluencePage } from '@/types/globe';
+import { Separator } from '@/components/ui/separator';
+import { JiraIssue, ConfluencePage } from '@/services/atlassianService';
+import { ExternalLink, FileText, Bug, Users, Calendar, Tag } from 'lucide-react';
 
 interface AtlassianResultsProps {
   jiraIssues: JiraIssue[];
@@ -12,162 +12,210 @@ interface AtlassianResultsProps {
   onViewConfluencePage: (pageId: string) => void;
 }
 
-const AtlassianResults: React.FC<AtlassianResultsProps> = ({
-  jiraIssues,
-  confluencePages,
-  onViewJiraIssue,
-  onViewConfluencePage
-}) => {
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'done':
-      case 'resolved':
-      case 'closed':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'in progress':
-      case 'in review':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-    }
-  };
+export const AtlassianResults = ({ 
+  jiraIssues, 
+  confluencePages, 
+  onViewJiraIssue, 
+  onViewConfluencePage 
+}: AtlassianResultsProps) => {
+  const totalResults = jiraIssues.length + confluencePages.length;
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority.toLowerCase()) {
-      case 'highest':
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-      case 'lowest':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  if (totalResults === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Atlassian Search Results
+          </CardTitle>
+          <CardDescription>
+            No relevant results found in Jira or Confluence
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Try refining your search terms or check the knowledge base for general information.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Jira Issues Section */}
-      {jiraIssues.length > 0 && (
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <AlertCircle className="h-5 w-5" />
-            Jira Issues ({jiraIssues.length})
-          </h3>
-          <div className="space-y-3">
+          <h3 className="text-lg font-semibold">Atlassian Search Results</h3>
+          <p className="text-sm text-muted-foreground">
+            Found {totalResults} relevant items
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Badge variant="secondary">
+            {jiraIssues.length} Jira Issues
+          </Badge>
+          <Badge variant="secondary">
+            {confluencePages.length} Confluence Pages
+          </Badge>
+        </div>
+      </div>
+
+      {/* Jira Issues */}
+      {jiraIssues.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bug className="h-5 w-5" />
+              Jira Issues ({jiraIssues.length})
+            </CardTitle>
+            <CardDescription>
+              Related issues and feature requests
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {jiraIssues.map((issue) => (
-              <Card key={issue.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <span className="font-mono text-sm text-blue-600">
-                          {issue.key}
-                        </span>
-                        {issue.summary}
-                      </CardTitle>
-                      <div className="flex items-center gap-2 mt-2">
-                        {getStatusIcon(issue.status)}
-                        <Badge variant="outline" className="text-xs">
-                          {issue.status}
-                        </Badge>
-                        <Badge className={`text-xs ${getPriorityColor(issue.priority)}`}>
-                          {issue.priority}
-                        </Badge>
-                        <Badge variant="secondary" className="text-xs">
-                          {issue.issueType.name}
-                        </Badge>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onViewJiraIssue(issue.key)}
+              <div key={issue.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="font-mono">
+                      {issue.key}
+                    </Badge>
+                    <Badge 
+                      variant={issue.status === 'In Progress' ? 'default' : 'secondary'}
                     >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
+                      {issue.status}
+                    </Badge>
+                    <Badge variant="outline">
+                      {issue.priority}
+                    </Badge>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-sm text-gray-600 line-clamp-2">
-                    {issue.description}
-                  </p>
-                  <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
-                    <span>Project: {issue.project.name}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onViewJiraIssue(issue.key)}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <h4 className="font-medium mb-2">{issue.summary}</h4>
+                
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-3 w-3" />
+                    <span>Project: {issue.project.name} ({issue.project.key})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-3 w-3" />
+                    <span>Type: {issue.issueType.name}</span>
+                  </div>
+                  {issue.assignee && (
+                    <div className="flex items-center gap-2">
+                      <Users className="h-3 w-3" />
+                      <span>Assignee: {issue.assignee}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-3 w-3" />
                     <span>Updated: {new Date(issue.updated).toLocaleDateString()}</span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Confluence Pages Section */}
+      {/* Confluence Pages */}
       {confluencePages.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Documentation ({confluencePages.length})
-          </h3>
-          <div className="space-y-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Confluence Pages ({confluencePages.length})
+            </CardTitle>
+            <CardDescription>
+              Documentation and knowledge base articles
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {confluencePages.map((page) => (
-              <Card key={page.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-base">{page.title}</CardTitle>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="outline" className="text-xs">
-                          {page.space.name}
-                        </Badge>
-                        <Badge variant="secondary" className="text-xs">
-                          v{page.version.number}
-                        </Badge>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onViewConfluencePage(page.id)}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
+              <div key={page.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">
+                      {page.space.name}
+                    </Badge>
+                    <Badge variant="secondary">
+                      v{page.version.number}
+                    </Badge>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div 
-                    className="text-sm text-gray-600 line-clamp-3"
-                    dangerouslySetInnerHTML={{
-                      __html: page.body.storage.value.replace(/<[^>]*>/g, '').substring(0, 200) + '...'
-                    }}
-                  />
-                  <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
-                    <span>Space: {page.space.key}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onViewConfluencePage(page.id)}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <h4 className="font-medium mb-2">{page.title}</h4>
+                
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-3 w-3" />
+                    <span>Space: {page.space.name} ({page.space.key})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-3 w-3" />
                     <span>Status: {page.status}</span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                
+                {/* Preview of content */}
+                {page.body.storage.value && (
+                  <div className="mt-3 p-3 bg-muted/30 rounded text-sm">
+                    <div 
+                      className="line-clamp-3 text-muted-foreground"
+                      dangerouslySetInnerHTML={{ 
+                        __html: page.body.storage.value.replace(/<[^>]*>/g, '').substring(0, 200) + '...' 
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      {/* No Results */}
-      {jiraIssues.length === 0 && confluencePages.length === 0 && (
-        <div className="text-center py-8">
-          <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">No relevant issues or documentation found.</p>
-        </div>
-      )}
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open('https://global-e.atlassian.net', '_blank')}
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open Jira
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open('https://global-e.atlassian.net/wiki', '_blank')}
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open Confluence
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default AtlassianResults; 
+}; 
