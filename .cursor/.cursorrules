@@ -1,0 +1,84 @@
+# Cursor Rules for Globe Assist UI
+
+## Important Language Requirement
+**The system and all code in the system must be written in English only.**
+- All user interface text should be in English
+- All code comments should be in English
+- All variable names and function names should be in English
+- All documentation should be in English
+
+## Project Overview
+This is a React TypeScript application for Globe Assist UI, an internal support platform for Customer Success Managers at Global-e.
+
+## Technology Stack
+- React 18 with TypeScript
+- Vite for build tooling
+- Tailwind CSS for styling
+- shadcn/ui for component library
+- React Router for navigation
+- React Query for data fetching
+
+## Code Style Guidelines
+- Use TypeScript for all new code
+- Follow React functional component patterns
+- Use Tailwind CSS for styling
+- Prefer shadcn/ui components over custom implementations
+- Write clear, descriptive variable and function names in English
+- Add JSDoc comments for complex functions
+
+## Component Structure
+- Components are located in `src/components/`
+- UI components are in `src/components/ui/`
+- Pages are in `src/pages/`
+- Services are in `src/services/`
+- Types are in `src/types/`
+
+## Development Workflow
+1. All code must be written in English
+2. Use the component catalog (`COMPONENT_CATALOG.md`) for reference
+3. Update the catalog when adding new components
+4. Test changes thoroughly before committing
+
+## File Naming Conventions
+- Use PascalCase for component files: `ComponentName.tsx`
+- Use camelCase for utility files: `utilityName.ts`
+- Use kebab-case for CSS files: `component-name.css`
+
+## Import Organization
+1. React imports
+2. Third-party library imports
+3. Internal component imports
+4. Type imports
+5. Utility imports
+
+## State Management
+- Use React hooks for local state
+- Use React Query for server state
+- Keep state as close to where it's used as possible
+
+## Error Handling
+- Use try-catch blocks for async operations
+- Provide meaningful error messages in English
+- Log errors appropriately
+
+## Performance Considerations
+- Use React.memo for expensive components
+- Implement proper dependency arrays in useEffect
+- Lazy load components when appropriate
+
+## Testing Guidelines
+- Write tests for complex logic
+- Test user interactions
+- Ensure accessibility compliance
+
+## Accessibility
+- Use semantic HTML elements
+- Provide proper ARIA labels
+- Ensure keyboard navigation works
+- Maintain color contrast ratios
+
+## Documentation
+- Keep README.md updated
+- Document complex components
+- Update component catalog when adding new components
+- Write clear commit messages in English

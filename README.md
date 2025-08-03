@@ -1,74 +1,86 @@
-# Globe – CSM Assistant
+# Globe Assist UI
 
-Welcome to **Globe**, an internal support platform built to serve Customer Success Managers (CSMs) at Global-e.
+## Important Note
+**The system and all code in the system must be written in English only.**
+- All user interface text should be in English
+- All code comments should be in English
+- All variable names and function names should be in English
+- All documentation should be in English
 
-This tool provides CSMs with fast, clear access to key product information in response to merchant questions across three main areas:
-- Shipments  
-- Payments  
-- Configuration
+## Component Catalog
 
-The user interface integrates seamlessly with our internal AI agent built using **Cursor** and **Atlassian MCP**.
+This project includes a comprehensive component catalog to help developers understand and use the available UI components.
 
+### Visual Gallery
+- **URL**: `/gallery` - Visual component gallery
+- **Features**: Interactive examples of all UI components
+- **Usage**: Click "🎨 View Component Gallery" button on the main page
 
-## 🚀 Quick Start
+### Text Catalog
+- **File**: `COMPONENT_CATALOG.md` - Complete component documentation
+- **Features**: Detailed descriptions and file locations
+- **Usage**: Reference for finding and understanding components
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Getting Started
 
-Follow these steps:
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
-```sh
-# Step 1: Clone the repository
-git clone https://github.com/YOUR_USERNAME/globe-assist-ui.git
+### Installation
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd globe-assist-ui
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server
+### Development
+```bash
 npm run dev
 ```
 
-## 🛠️ Development
-
-### Local Development
-```sh
-npm run dev
-```
-
-### Build for Production
-```sh
+### Build
+```bash
 npm run build
 ```
 
-### Preview Production Build
-```sh
-npm run preview
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
-├── components/          # React components
+├── components/          # Main application components
 │   ├── ui/            # shadcn/ui components
 │   └── ...            # Custom components
-├── pages/             # Page components
-├── types/             # TypeScript types
-├── data/              # Mock data
-└── lib/               # Utilities
+├── pages/              # Application pages
+├── services/           # API and external services
+├── hooks/              # Custom React hooks
+├── types/              # TypeScript type definitions
+└── data/               # Mock data and constants
 ```
 
-## 🛠️ Technologies
+## Available Scripts
 
-This project is built with:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-- **Vite** - Fast build tool
-- **TypeScript** - Type safety
+## Technologies Used
+
 - **React 18** - UI framework
-- **shadcn/ui** - Component library
+- **TypeScript** - Type safety
+- **Vite** - Build tool
 - **Tailwind CSS** - Styling
+- **shadcn/ui** - Component library
 - **React Router** - Navigation
-- **TanStack Query** - Data fetching
+- **React Query** - Data fetching
+
+## Contributing
+
+1. All code must be written in English
+2. Follow the existing code style
+3. Update the component catalog when adding new components
+4. Test your changes thoroughly
+
+## License
+
+This project is proprietary and confidential.
 

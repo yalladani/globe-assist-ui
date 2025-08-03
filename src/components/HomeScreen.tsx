@@ -1,6 +1,5 @@
 import { PromptInput } from './PromptInput';
 import { RecentConversations } from './RecentConversations';
-import { AtlassianConfig } from './AtlassianConfig';
 import { Category, Message } from '@/types/globe';
 import { Zap, Shield, Users } from 'lucide-react';
 
@@ -59,11 +58,6 @@ export const HomeScreen = ({ onSubmit, isLoading, recentConversations, onResumeC
                 <span className="text-sm text-globe-text-secondary">CSM Focused</span>
               </div>
             </div>
-          </div>
-
-          {/* Atlassian MCP Status */}
-          <div className="mb-8">
-            <AtlassianConfig />
           </div>
 
           {/* Prompt Input */}

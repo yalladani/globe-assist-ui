@@ -7,6 +7,8 @@ import { ConversationState, Message, Category, JiraIssue, ConfluencePage, Messag
 import { getRandomResponse } from '@/data/mockData';
 import { atlassianService } from '@/services/atlassianService';
 import FeedbackStatsComponent from '@/components/FeedbackStats';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface Conversation {
   id: string;
@@ -18,6 +20,7 @@ interface Conversation {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState<ConversationState>({
     messages: [],
     currentResponse: null,
@@ -220,6 +223,15 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-globe-bg">
         <Header />
+        <div className="flex justify-end p-4">
+          <Button 
+            onClick={() => navigate('/gallery')}
+            variant="outline"
+            className="mb-4"
+          >
+            🎨 View Component Gallery
+          </Button>
+        </div>
         <HomeScreen 
           onSubmit={handleSubmit} 
           isLoading={state.isLoading}
