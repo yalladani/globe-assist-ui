@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 250 100% 99%;
+    --foreground: 225 15% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 225 15% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 15% 20%;
+
+    --primary: 15 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 15 100% 70%;
+
+    --secondary: 240 8% 95%;
+    --secondary-foreground: 225 15% 30%;
+
+    --muted: 240 6% 96%;
+    --muted-foreground: 225 8% 50%;
+
+    --accent: 15 100% 97%;
+    --accent-foreground: 15 100% 60%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 8% 90%;
+    --input: 240 8% 92%;
+    --ring: 15 100% 60%;
+
+    /* Globe-specific design tokens */
+    --globe-bg: 250 100% 99%;
+    --globe-surface: 0 0% 100%;
+    --globe-surface-elevated: 0 0% 100%;
+    --globe-text-primary: 225 15% 20%;
+    --globe-text-secondary: 225 8% 50%;
+    --globe-border-subtle: 240 8% 90%;
+    --globe-accent: 15 100% 60%;
+    --globe-accent-light: 15 100% 96%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(15 100% 60%), hsl(20 100% 70%));
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(15 30% 99%));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px hsl(240 8% 70% / 0.1);
+    --shadow-md: 0 4px 8px hsl(240 8% 70% / 0.12), 0 2px 4px hsl(240 8% 70% / 0.08);
+    --shadow-lg: 0 12px 24px hsl(240 8% 70% / 0.15), 0 4px 8px hsl(240 8% 70% / 0.1);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 225 15% 8%;
+    --foreground: 240 8% 95%;
+
+    --card: 225 15% 10%;
+    --card-foreground: 240 8% 95%;
+
+    --popover: 225 15% 10%;
+    --popover-foreground: 240 8% 95%;
+
+    --primary: 15 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 15 100% 75%;
+
+    --secondary: 225 15% 15%;
+    --secondary-foreground: 240 8% 85%;
+
+    --muted: 225 15% 12%;
+    --muted-foreground: 225 8% 60%;
+
+    --accent: 225 15% 15%;
+    --accent-foreground: 15 100% 65%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 225 15% 18%;
+    --input: 225 15% 15%;
+    --ring: 15 100% 65%;
+
+    /* Globe dark tokens */
+    --globe-bg: 225 15% 8%;
+    --globe-surface: 225 15% 10%;
+    --globe-surface-elevated: 225 15% 12%;
+    --globe-text-primary: 240 8% 95%;
+    --globe-text-secondary: 225 8% 65%;
+    --globe-border-subtle: 225 15% 18%;
+    --globe-accent: 15 100% 65%;
+    --globe-accent-light: 225 15% 15%;
+    
+    /* Dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(15 100% 65%), hsl(20 100% 75%));
+    --gradient-surface: linear-gradient(180deg, hsl(225 15% 10%), hsl(225 15% 8%));
+    
+    /* Dark shadows */
+    --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 8px hsl(0 0% 0% / 0.4), 0 2px 4px hsl(0 0% 0% / 0.2);
+    --shadow-lg: 0 12px 24px hsl(0 0% 0% / 0.5), 0 4px 8px hsl(0 0% 0% / 0.3);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
